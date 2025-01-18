@@ -1,7 +1,6 @@
 volumes:
   n8n_storage:
   postgres_storage:
-  ollama_storage:
   qdrant_storage:
   traefik_letsencrypt: # Para almacenar certificados de Let's Encrypt
 
@@ -90,30 +89,3 @@ services:
       - 6333:6333
     volumes:
       - qdrant_storage:/qdrant/storage
-
-  ollama-cpu:
-    profiles: ["cpu"]
-    <<: *service-ollama
-
-  ollama-gpu:
-    profiles: ["gpu-nvidia"]
-    <<: *service-ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [gpu]
-
-  ollama-pull-llama-cpu:
-    profiles: ["cpu"]
-    <<: *init-ollama
-    depends_on:
-      - ollama-cpu
-
-  ollama-pull-llama-gpu:
-    profiles: ["gpu-nvidia"]
-    <<: *init-ollama
-    depends_on:
-      - ollama-gpu
